@@ -4,3 +4,5 @@
 # to use your shell’s builtin to set these variables by hand.
 
 eval $(docker-machine env Char)
+
+# Run env|grep DOCKER to check whether DOCKER environment variables are set.
