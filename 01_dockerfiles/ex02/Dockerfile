@@ -8,12 +8,12 @@
 
 FROM ruby:2.5.1
 
-RUN apt-get update -y && \
-	apt-get install -y 	nodejs && \
-	apt-get install -y  build-essential && \
-	apt-get install -y  libpq-dev && \
-	apt-get install -y  sqlite3 && \
-	apt-get install -y  yarn
+RUN apt-get update && \
+	apt-get install -y nodejs \
+	build-essential \
+	libpq-dev \
+	sqlite3 \
+	yarn
 
 ONBUILD COPY app /opt/app
 ONBUILD WORKDIR /opt/app
