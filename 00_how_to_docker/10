@@ -1,3 +1,6 @@
 # Create a volume named hatchery.
 
 docker volume create --name hatchery
+
+# Volumes are the preferred way to persist data in Docker containers and services.
+# Some use cases for volumes include: Sharing data among multiple running containers.

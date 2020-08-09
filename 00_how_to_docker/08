@@ -2,7 +2,7 @@
 # directly with the container via your terminal, and that the container deletes itself
 # once the shell’s execution is done.
 
-docker run -it --rm alpine
+docker run -it --rm alpine /bin/sh
 
 # -it for to interact with the terminal
 # --rm for delete it

@@ -3,4 +3,7 @@
 
 docker rmi -f $(docker images -aq)
 
+# rmi is for deleting images
 # docker image ls
+# -a Show all containers (default shows just running)
+# -q Only display numeric IDs
