@@ -4,7 +4,7 @@
 # container are updated). For this exercise, you should only specify the commands
 # to be run directly in the container.
 
-docker run -ti --rm debian
+docker run -it --rm debian
 apt-get update
 apt-get upgrade -y
 apt-get install -y build-essential git
