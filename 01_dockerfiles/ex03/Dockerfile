@@ -1,40 +1,53 @@
 FROM debian
+
 EXPOSE 443 22
+
 RUN apt-get update -y \
 && apt-get upgrade -y \
 && apt-get install -y curl openssh-server ca-certificates
+
+# GitLab repo
 RUN curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | bash \
 && apt-get install -y gitlab-ce
+
+# Self signed certificate
 RUN mkdir -p /etc/gitlab/ssl \
 && chmod 755 /etc/gitlab/ssl \
 && openssl req -new -x509 -nodes -batch -newkey rsa:2048 -keyout /etc/gitlab/ssl/gitlab.key -out /etc/gitlab/ssl/gitlab.crt -days 365 \
 && echo "external_url \"https://192.168.99.101\"" >> /etc/gitlab/gitlab.rb \
 && echo "nginx['ssl_certificate'] = \"/etc/gitlab/ssl/gitlab.crt\"" >> /etc/gitlab/gitlab.rb \
 && echo "nginx['ssl_certificate_key'] = \"/etc/gitlab/ssl/gitlab.key\"" >> /etc/gitlab/gitlab.rb \
-&& echo "gitlab_rails['gitlab_shell_ssh_port'] = 22" >> /etc/gitlab/gitlab.rb \
-&& echo "monitoring['grafana']['enable'] = false" >> /etc/gitlab/gitlab.rb
+&& echo "gitlab_rails['gitlab_shell_ssh_port'] = 22" >> /etc/gitlab/gitlab.rb
+
+# Disable Grafana
+# RUN sed -i "s/# grafana\['enable'\] = true/grafana['enable'] = false/g" /etc/gitlab/gitlab.rb
+
 ENTRYPOINT  (/opt/gitlab/embedded/bin/runsvdir-start &) \
 && service ssh start \
 && gitlab-ctl reconfigure \
 && gitlab-ctl tail
-# To build and run this.
-# In the same directory as the Dockerfile, do
-#
+
+# How to build ?
 # docker build -t gitlab .
+
+# How to run ?
 # docker run --rm -it -p 8443:443 -p 8022:22 --privileged gitlab
-#
-# To access web client, open safari with address,
+
+# Tests :
 # https://192.168.99.101:8443
-# Depeding on the ip docker-machine gives you, you have to change all occurances of the ip above
-# Get your docker ip with "docker-machine ip (your docker-machine name here)"
-#
-# At the site, make a password, and login with root.
-# To create users, go to the front page and add people.
-# To interact with git, make a new project in gitlab.
-# Generate keys and copy the bublic key to ssh-keys part on your gitlab.
-#
-# ssh-keygen -t ed25519 -C 'root@gitlab.com'
+# The reset password page (first page) creates a user 'root' with the password you entered
+
+# 2) HTTPS :
+# clone : env GIT_SSL_NO_VERIFY=true git clone https://192.168.99.101:8443/root/<repo>.git
+# push : env GIT_SSL_NO_VERIFY=true git push
+
+# 3) SSH :
+# Add your ssh key in gitlab:
+# ssh-keygen -t ed25519 -C 'root@gitlab.com' -f id_ed25519
 # pbcopy < ~/.ssh/id_ed25519.pub
-# ssh -T -p 8022 git@192.168.99.101
-# git clone ssh://git@192.168.99.101:8022/root/projectname.git gitlabrepo
-# GIT_SSL_NO_VERIFY=true git clone https://192.168.99.101:8443/root/projectname.git gitlabrepo
+# ssh -T -i id_ed25519 -p 8022 git@192.168.99.101
+
+# clone : env GIT_SSH_COMMAND='ssh -i id_ed25519 -p 8022' git clone git@192.168.99.101:root/<repo>.git
+# push : env GIT_SSH_COMMAND='ssh -i ../id_ed25519 -p 8022' git push
+
+# https://medium.com/@1997corry/running-your-own-gitlab-on-docker-community-edition-39c4a8f99553

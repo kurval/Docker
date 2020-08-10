@@ -3,3 +3,5 @@
 docker network create -d overlay overmind
 
 # docker network ls
+
+# an overlay network for the service to connect to other services in the swarm

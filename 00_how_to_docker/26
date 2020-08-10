@@ -7,3 +7,6 @@ docker service create -d --network overmind --name engineering-bay --replicas 2 
 # docker service ps engineering-bay
 
 # https://hub.docker.com/r/42school/engineering-bay/
+
+# In the replicated services model, the swarm manager distributes a specific number
+# of replica tasks among the nodes based upon the scale you set in the desired state.

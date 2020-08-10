@@ -7,3 +7,7 @@ docker swarm init --advertise-addr $(docker-machine ip Char)
 # and that have been configured to join together in a cluster.
 
 # This allows the user to manage multiple containers deployed across multiple host machines.
+
+# One of the key advantages of swarm services over standalone containers is
+# that you can modify a service’s configuration, including the networks and
+# volumes it is connected to, without the need to manually restart the service. 
