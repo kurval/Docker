@@ -6,8 +6,8 @@ RUN apk update \
 
 ENTRYPOINT vim
 
-# Build Image
+# How to build ?
 # docker build -t ex00 .
 
-# Create Container
+# How to run ?
 # docker run --name ex00 -it --rm ex00
