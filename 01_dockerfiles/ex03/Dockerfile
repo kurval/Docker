@@ -19,9 +19,6 @@ RUN mkdir -p /etc/gitlab/ssl \
 && echo "nginx['ssl_certificate_key'] = \"/etc/gitlab/ssl/gitlab.key\"" >> /etc/gitlab/gitlab.rb \
 && echo "gitlab_rails['gitlab_shell_ssh_port'] = 22" >> /etc/gitlab/gitlab.rb
 
-# Disable Grafana
-# RUN sed -i "s/# grafana\['enable'\] = true/grafana['enable'] = false/g" /etc/gitlab/gitlab.rb
-
 ENTRYPOINT  (/opt/gitlab/embedded/bin/runsvdir-start &) \
 && service ssh start \
 && gitlab-ctl reconfigure \
